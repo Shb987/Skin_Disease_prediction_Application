@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Scan Detail - SkinCheck AI{% endblock %}
+
+{% block content %}
+<div class="flex flex-col lg:flex-row min-h-screen">
+
+  <main class="flex-1 p-6">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h1 class="text-2xl font-bold mb-4">Scan Details</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h4 class="text-sm text-gray-500">Patient</h4>
+          <p class="font-medium">{{ scan.patient_name }}</p>
+        </div>
+        <div>
+          <h4 class="text-sm text-gray-500">Date</h4>
+          <p class="font-medium">{{ scan.created_at|date:"Y-m-d H:i" }}</p>
+        </div>
+        <div>
+          <h4 class="text-sm text-gray-500">Scan Type</h4>
+          <p class="font-medium">{{ scan.scan_type }}</p>
+        </div>
+        <div>
+          <h4 class="text-sm text-gray-500">Result</h4>
+          <span class="px-2 py-1 text-xs rounded-full
+            {% if scan.result == 'Normal' %}bg-green-100 text-green-800
+            {% elif scan.result == 'Mild Risk' %}bg-amber-100 text-amber-800
+            {% elif scan.result == 'High Risk' %}bg-red-100 text-red-800
+            {% else %}bg-gray-100 text-gray-800{% endif %}">
+            {{ scan.result }}
+          </span>
+        </div>
+        <div>
+          <h4 class="text-sm text-gray-500">Confidence</h4>
+          <p class="font-medium">{{ scan.confidence }}%</p>
+        </div>
+        <div>
+          <h4 class="text-sm text-gray-500">Image</h4>
+          {% if scan.image_file %}
+          <img src="{{ scan.image_file.url }}" alt="Skin Image" class="w-64 h-64 object-contain border rounded">
+          {% else %}
+          <p class="text-gray-500">No image uploaded</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <a href="{% url 'history' %}" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Back to History</a>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
