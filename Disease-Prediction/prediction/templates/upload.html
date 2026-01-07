@@ -8,32 +8,74 @@
   <p class="text-slate-400 mt-2">Upload and analyze skin images for cancer detection using AI</p>
 </div>
 
+<!-- Instructions -->
+<div class="bg-slate-900/60 backdrop-blur-xl p-8 rounded-3xl border border-slate-800 shadow-2xl mb-8">
+  <h2 class="text-xl font-bold text-slate-100 mb-6 font-display uppercase tracking-wider text-sm opacity-60">Upload
+    Instructions</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="p-6 bg-slate-800/40 rounded-2xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+      <div
+        class="bg-indigo-500/10 w-10 h-10 rounded-xl flex items-center justify-center mb-4 border border-indigo-500/20">
+        <span class="text-indigo-400 font-black">1</span>
+      </div>
+      <h3 class="font-bold text-slate-200 mb-2">Select Skin Image</h3>
+      <p class="text-sm text-slate-400 font-medium">Choose a high-quality skin image in JPG or PNG format</p>
+    </div>
+    <div class="p-6 bg-slate-800/40 rounded-2xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+      <div
+        class="bg-indigo-500/10 w-10 h-10 rounded-xl flex items-center justify-center mb-4 border border-indigo-500/20">
+        <span class="text-indigo-400 font-black">2</span>
+      </div>
+      <h3 class="font-bold text-slate-200 mb-2">Upload & Process</h3>
+      <p class="text-sm text-slate-400 font-medium">Our AI will analyze the image for cancerous features</p>
+    </div>
+    <div class="p-6 bg-slate-800/40 rounded-2xl border border-slate-700/50 hover:bg-slate-800/60 transition-colors">
+      <div
+        class="bg-indigo-500/10 w-10 h-10 rounded-xl flex items-center justify-center mb-4 border border-indigo-500/20">
+        <span class="text-indigo-400 font-black">3</span>
+      </div>
+      <h3 class="font-bold text-slate-200 mb-2">Review Results</h3>
+      <p class="text-sm text-slate-400 font-medium">Get detailed analysis and skin health insights</p>
+    </div>
+  </div>
+</div>
+
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
   <!-- Upload Section -->
   <div class="bg-slate-900/60 backdrop-blur-xl p-8 rounded-3xl border border-slate-800 shadow-2xl">
     <h2 class="text-xl font-bold text-slate-100 mb-6 font-display uppercase tracking-wider text-sm opacity-60">File
       Analysis</h2>
 
-    <form id="upload-form"
-      class="group border-2 border-dashed border-slate-800 rounded-3xl p-10 text-center mb-8 hover:border-indigo-500/50 hover:bg-slate-800/20 transition-all cursor-pointer"
-      onclick="document.getElementById('file-upload').click()" enctype="multipart/form-data">
+    <form id="upload-form" class="space-y-6" onclick="document.getElementById('file-upload').click()"
+      enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="mb-6 flex justify-center">
-        <div
-          class="p-5 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 group-hover:scale-105 transition-transform duration-500 shadow-lg shadow-indigo-500/5">
-          <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
-        </div>
+
+      <!-- Patient Name Input (Clicking this shouldn't trigger file upload) -->
+      <div class="space-y-2" onclick="event.stopPropagation()">
+        <label class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Patient Name / ID</label>
+        <input type="text" id="patient-name" name="patient_name" placeholder="Enter patient identifier..."
+          class="w-full px-6 py-4 bg-slate-950/50 border border-slate-800 rounded-2xl text-slate-100 placeholder-slate-700 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/5 transition-all font-mono font-medium">
       </div>
-      <input type="file" id="file-upload" name="image_file" accept=".jpg,.png,.jpeg" class="hidden">
-      <p id="file-info" class="text-slate-200 font-semibold text-lg tracking-tight">Drop your scan here</p>
-      <p class="text-slate-500 text-sm mt-2 font-medium">or click to browse filesystem</p>
+
+      <div
+        class="group border-2 border-dashed border-slate-800 rounded-3xl p-10 text-center hover:border-indigo-500/50 hover:bg-slate-800/20 transition-all cursor-pointer">
+        <div class="mb-6 flex justify-center">
+          <div
+            class="p-5 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 group-hover:scale-105 transition-transform duration-500 shadow-lg shadow-indigo-500/5">
+            <svg class="w-10 h-10 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+        </div>
+        <input type="file" id="file-upload" name="image_file" accept=".jpg,.png,.jpeg" class="hidden">
+        <p id="file-info" class="text-slate-200 font-semibold text-lg tracking-tight">Drop your scan here</p>
+        <p class="text-slate-500 text-sm mt-2 font-medium">or click to browse filesystem</p>
+      </div>
     </form>
 
     <button id="upload-btn"
-      class="w-full py-5 px-6 rounded-2xl text-white font-bold bg-indigo-600 hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/20 active:scale-[0.98] uppercase tracking-widest text-xs">
+      class="w-full py-5 px-6 rounded-2xl text-white font-bold bg-indigo-600 hover:bg-indigo-500 transition-all shadow-xl shadow-indigo-600/20 active:scale-[0.98] uppercase tracking-widest text-xs mt-6">
       Initiate Full Scan
     </button>
 
@@ -56,7 +98,8 @@
     <div class="absolute inset-0 bg-indigo-500/5 blur-[100px] pointer-events-none"></div>
     <h2 class="text-xl font-bold text-slate-100 mb-8 w-full text-left uppercase tracking-wider text-sm opacity-60">
       System Registry</h2>
-    <div id="results" class="text-center text-slate-500 flex flex-col items-center relative z-10 w-full">
+    <div id="results"
+      class="text-center text-slate-500 flex flex-col items-center relative z-10 w-full h-full justify-center">
       <div
         class="bg-slate-800/40 p-10 rounded-[2.5rem] border border-slate-700/50 mb-6 scale-90 opacity-40 shadow-inner">
         <svg class="w-20 h-20 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -70,33 +113,7 @@
   </div>
 </div>
 
-<!-- Instructions -->
-<div class="bg-white p-6 rounded-xl shadow border border-gray-100 mt-8">
-  <h2 class="text-lg font-semibold text-gray-800 mb-4">Upload Instructions</h2>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div class="p-4 bg-blue-50 rounded-lg">
-      <div class="bg-blue-100 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
-        <span class="text-blue-600 font-bold">1</span>
-      </div>
-      <h3 class="font-medium mb-2">Select Skin Image</h3>
-      <p class="text-sm text-gray-600">Choose a high-quality skin image in JPG or PNG format</p>
-    </div>
-    <div class="p-4 bg-blue-50 rounded-lg">
-      <div class="bg-blue-100 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
-        <span class="text-blue-600 font-bold">2</span>
-      </div>
-      <h3 class="font-medium mb-2">Upload & Process</h3>
-      <p class="text-sm text-gray-600">Our AI will analyze the image for cancerous features</p>
-    </div>
-    <div class="p-4 bg-blue-50 rounded-lg">
-      <div class="bg-blue-100 w-10 h-10 rounded-lg flex items-center justify-center mb-3">
-        <span class="text-blue-600 font-bold">3</span>
-      </div>
-      <h3 class="font-medium mb-2">Review Results</h3>
-      <p class="text-sm text-gray-600">Get detailed analysis and skin health insights</p>
-    </div>
-  </div>
-</div>
+
 
 <script>
   // CSRF helper
@@ -123,6 +140,7 @@
   const progressBar = document.getElementById('progress-bar');
   const progressPercent = document.getElementById('progress-percent');
   const resultsDiv = document.getElementById('results');
+  const patientInput = document.getElementById('patient-name');
 
   fileInput.addEventListener('change', () => {
     if (fileInput.files.length > 0) {
@@ -132,62 +150,99 @@
   });
 
   uploadBtn.addEventListener('click', async () => {
-    if (fileInput.files.length === 0) return;
+    if (fileInput.files.length === 0) {
+      alert("Please select a file first.");
+      return;
+    }
+
+    if (!patientInput.value.trim()) {
+      alert("Please enter a patient name.");
+      return;
+    }
 
     const file = fileInput.files[0];
     const formData = new FormData();
-    formData.append('image_file', file);  // Match Django form field
-    formData.append('patient_name', '{{ user.username }}');
+    formData.append('image_file', file);
+    formData.append('patient_name', patientInput.value);
     formData.append('scan_type', 'Skin Image');
+
+    // Create a local URL for the uploaded image to display it immediately
+    const imageUrl = URL.createObjectURL(file);
 
     progressWrapper.classList.remove('hidden');
     progressBar.style.width = '0%';
     progressPercent.textContent = '0%';
-    resultsDiv.innerHTML = '';
+    resultsDiv.innerHTML = `
+        <div class="animate-pulse flex flex-col items-center">
+             <div class="h-48 w-48 bg-slate-800 rounded-3xl mb-4 border border-slate-700/50 overflow-hidden relative">
+                 <img src="${imageUrl}" class="w-full h-full object-cover opacity-50">
+                 <div class="absolute inset-0 flex items-center justify-center">
+                     <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                     </svg>
+                 </div>
+             </div>
+             <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">Processing Neural Net...</p>
+        </div>
+    `;
 
     try {
+      // Simulate progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 5;
+        if (progress > 90) clearInterval(interval);
+        progressBar.style.width = `${progress}%`;
+        progressPercent.textContent = `${progress}%`;
+      }, 100);
+
       const response = await fetch('{% url "upload" %}', {
         method: 'POST',
         headers: {
           'X-CSRFToken': csrftoken,
-          'X-Requested-With': 'XMLHttpRequest'  // Important!
+          'X-Requested-With': 'XMLHttpRequest'
         },
         body: formData
       });
+
+      clearInterval(interval);
+      progressBar.style.width = '100%';
+      progressPercent.textContent = '100%';
 
       if (!response.ok) throw new Error('Upload failed');
       const result = await response.json();
 
       resultsDiv.innerHTML = `
-      <div class="text-center py-4 w-full animate-in fade-in zoom-in duration-500">
-        <div class="inline-flex items-center justify-center w-24 h-24 rounded-3xl ${result.diagnosis === 'Benign' ? 'bg-emerald-500/10 border border-emerald-500/30' : 'bg-rose-500/10 border border-rose-500/30'} mb-8 shadow-inner shadow-black/20">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 ${result.diagnosis === 'Benign' ? 'text-emerald-400' : 'text-rose-400'}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            ${result.diagnosis === 'Benign' ? `
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            ` : `
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            `}
-          </svg>
+      <div class="text-center py-4 w-full animate-in fade-in zoom-in duration-500 flex flex-col items-center">
+        <!-- Display Uploaded Image from Local Preview -->
+        <div class="relative w-48 h-48 rounded-3xl overflow-hidden shadow-2xl border-4 ${result.risk_level.startsWith('Low') ? 'border-emerald-500/30' : (result.risk_level.includes('High') ? 'border-rose-500/30' : 'border-amber-500/30')} mb-6 group">
+             <img src="${imageUrl}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700">
+             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+             <div class="absolute bottom-4 left-0 right-0">
+                 <span class="px-3 py-1 bg-slate-900/80 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-white border border-white/10">Input Scan</span>
+             </div>
         </div>
-        <h3 class="text-3xl font-bold mb-2 text-slate-100">${result.diagnosis}</h3>
-        <p class="text-indigo-400 font-mono text-lg font-bold mb-6">${result.confidence.toFixed(2)}% Confidence</p>
+
+        <h3 class="text-3xl font-bold mb-1 text-slate-100">${result.diagnosis}</h3>
+        <p class="text-indigo-400 font-mono text-lg font-bold mb-6 tracking-tight">${result.confidence.toFixed(2)}% Confidence</p>
         
         <div class="w-full p-6 bg-slate-800/40 rounded-2xl border border-slate-700/50 text-left">
             <h4 class="text-xs uppercase font-bold text-slate-500 tracking-widest mb-4">Diagnostic Context</h4>
             <div class="flex justify-between items-center py-2 border-b border-slate-700/50">
                 <span class="text-slate-400">Risk Assessment</span>
-                <span class="${result.diagnosis === 'Benign' ? 'text-emerald-400' : 'text-rose-400'} font-medium">${result.risk_level}</span>
+                <span class="${result.risk_level.startsWith('Low') ? 'text-emerald-400' : (result.risk_level.includes('High') ? 'text-rose-400' : 'text-amber-400')} font-black text-sm uppercase tracking-wider">${result.risk_level}</span>
             </div>
             <div class="flex justify-between items-center py-3">
-                <span class="text-slate-400">Analysis Date</span>
-                <span class="text-slate-200 text-sm">${new Date().toLocaleDateString()}</span>
+                <span class="text-slate-400">Patient ID</span>
+                <span class="text-slate-200 text-sm font-bold">${patientInput.value}</span>
             </div>
         </div>
       </div>
     `;
     } catch (err) {
-      console.error(err); // Log the real error
-      resultsDiv.innerHTML = `<p class="text-red-500">Error uploading file. Please try again.</p>`;
+      console.error(err);
+      resultsDiv.innerHTML = `<p class="text-rose-500 font-bold">Error uploading file. Please try again.</p>`;
     }
   });
 </script>

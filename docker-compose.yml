@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    command: sh start.sh
+    volumes:
+      - ./Disease-Prediction/:/app/
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1

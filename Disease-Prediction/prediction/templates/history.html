@@ -57,8 +57,8 @@
                 </td>
                 <td class="py-7 px-10">
                   <span class="inline-flex items-center px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm
-                    {% if scan.result == 'Benign' %}text-emerald-400 bg-emerald-400/10 ring-1 ring-emerald-500/20
-                    {% elif scan.result == 'Melanoma' %}text-rose-400 bg-rose-400/10 ring-1 ring-rose-500/20
+                    {% if 'Low' in scan.risk_level %}text-emerald-400 bg-emerald-400/10 ring-1 ring-emerald-500/20
+                    {% elif 'High' in scan.risk_level %}text-rose-400 bg-rose-400/10 ring-1 ring-rose-500/20
                     {% else %}text-amber-400 bg-amber-400/10 ring-1 ring-amber-500/20{% endif %}">
                     <span class="w-2 h-2 rounded-full bg-current mr-2 animate-pulse"></span>
                     {{ scan.result }}
