@@ -5,7 +5,7 @@ venv/
 # Python cache
 __pycache__/
 *.pyc
-
+unet_isic2018.h5
 # Jupyter
 .ipynb_checkpoints/
 
@@ -26,3 +26,5 @@ staticfiles/
 # Environment variables
 .env
 .env.*
+
+db.sqlite3

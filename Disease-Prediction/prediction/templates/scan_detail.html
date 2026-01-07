@@ -41,9 +41,9 @@
           <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
             <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Result</h4>
             <span class="px-4 py-2 text-xs font-bold rounded-full uppercase tracking-wider
-              {% if scan.result == 'Benign' or scan.result == 'Melanocytic nevi (nv)' or scan.result == 'Benign keratosis-like lesions (bkl)' or scan.result == 'Vascular lesions (vasc)' or scan.result == 'Dermatofibroma (df)' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
-              {% elif scan.result == 'Actinic keratoses (akiec)' %}bg-amber-500/10 text-amber-400 border border-amber-500/20
-              {% else %}bg-rose-500/10 text-rose-400 border border-rose-500/20{% endif %}">
+              {% if 'Low' in scan.risk_level %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
+              {% elif 'High' in scan.risk_level %}bg-rose-500/10 text-rose-400 border border-rose-500/20
+              {% else %}bg-amber-500/10 text-amber-400 border border-amber-500/20{% endif %}">
               {{ scan.result }}
             </span>
           </div>
