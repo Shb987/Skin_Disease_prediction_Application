@@ -11,6 +11,7 @@ from django.contrib.auth.models import User
 
 # Load ML model
 model = load_model(r"prediction/skin_cancer_model.h5")
+# model2 =load_model(r"unet_isic2018.h5")
 class_names = [
     'Melanocytic nevi (nv)', 
     'Melanoma (mel)', 
@@ -94,8 +95,8 @@ def dashboard_view(request):
     records = Prediction.objects.filter(user=user).order_by("-timestamp")
 
     total_scans = records.count()
-    # Updated to check risk_level instead of specific disease names
-    normal_results = records.filter(risk_level="Low Risk").count()
+    # Updated to check if risk_level starts with "Low Risk" to handle "(benign)" suffix
+    normal_results = records.filter(risk_level__startswith="Low Risk").count()
     risk_detected = total_scans - normal_results
     recent_scans = records[:5]
 
@@ -140,7 +141,7 @@ def upload_skin_view(request):
             print(predictions)
             result = class_names[predicted_index]
             confidence = float(predictions[0][predicted_index])
-            risk_level = risk_map[result]
+            risk_level = risk_map.get(result, "Unknown Risk")
  
             # Save prediction
             Prediction.objects.create(
@@ -183,12 +184,12 @@ def history_view(request):
     scans = Prediction.objects.filter(user=request.user)
 
     if filter_val == 'normal':
-        scans = scans.filter(risk_level='Low Risk')
+        scans = scans.filter(risk_level__startswith='Low Risk')
     elif filter_val == 'mild':
-        scans = scans.filter(risk_level='Moderate Risk')
+        scans = scans.filter(risk_level__startswith='Moderate Risk')
     elif filter_val == 'high':
         # Include both High and Very High risk for 'high' filter
-        scans = scans.filter(risk_level__in=['High Risk', 'Very High Risk'])
+        scans = scans.filter(risk_level__icontains='High Risk')
 
     context = {
         'scans': scans.order_by('-timestamp'),
