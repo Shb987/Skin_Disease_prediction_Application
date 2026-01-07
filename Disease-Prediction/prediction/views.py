@@ -10,14 +10,27 @@ import numpy as np
 from django.contrib.auth.models import User
 
 # Load ML model
-model = load_model(r"prediction/alzheimer_cnn_model.h5")
-class_names = ['Basal Cell Carcinoma', 'Melanoma', 'Benign', 'Squamous Cell Carcinoma'] # Example placeholder names for skin cancer
+model = load_model(r"prediction/skin_cancer_model.h5")
+class_names = [
+    'Melanocytic nevi (nv)', 
+    'Melanoma (mel)', 
+    'Benign keratosis-like lesions (bkl)',
+    'Basal cell carcinoma (bcc)',
+    'Actinic keratoses (akiec)',
+    'Vascular lesions (vasc)',
+    'Dermatofibroma (df)'
+]
+
 risk_map = {
-    'Benign': 'Low Risk',
-    'Basal Cell Carcinoma': 'Moderate Risk',
-    'Squamous Cell Carcinoma': 'High Risk',
-    'Melanoma': 'Very High Risk'
+    'Melanocytic nevi (nv)': 'Low Risk (benign)',
+    'Melanoma (mel)': 'Very High Risk (life-threatening malignant tumor)',
+    'Benign keratosis-like lesions (bkl)': 'Low Risk',
+    'Basal cell carcinoma (bcc)': 'High Risk (malignant but slow growing)',
+    'Actinic keratoses (akiec)': 'Moderate Risk (pre-cancerous lesion)',
+    'Vascular lesions (vasc)': 'Low Risk (benign)',
+    'Dermatofibroma (df)': 'Low Risk (benign)'
 }
+
 
 
 
@@ -75,13 +88,14 @@ def logout_view(request):
 
 @login_required(login_url="login")
 def dashboard_view(request):
-    print(type(request.user), request.user)  # Debug
+    # print(type(request.user), request.user)  # Debug
 
     user = request.user
     records = Prediction.objects.filter(user=user).order_by("-timestamp")
 
     total_scans = records.count()
-    normal_results = records.filter(result="Benign").count()
+    # Updated to check risk_level instead of specific disease names
+    normal_results = records.filter(risk_level="Low Risk").count()
     risk_detected = total_scans - normal_results
     recent_scans = records[:5]
 
@@ -106,26 +120,25 @@ from io import BytesIO
 
 
 @login_required(login_url="login")
-def upload_mri_view(request):
+def upload_skin_view(request):
     if request.method == "POST":
         form = UploadForm(request.POST, request.FILES)
         if form.is_valid():
             patient_name = form.cleaned_data["patient_name"]
             scan_type = form.cleaned_data["scan_type"]
             image_file = form.cleaned_data["image_file"]
-            print(image_file)
+            
             # Wrap uploaded file in BytesIO
             img_bytes = BytesIO(image_file.read())
-            img = image.load_img(img_bytes, target_size=(128,128))
-            img_array = image.img_to_array(img) / 255.0
+            img = image.load_img(img_bytes, target_size=(28, 28))
+            img_array = image.img_to_array(img)
             img_array = np.expand_dims(img_array, axis=0)
+            # img_array = img_array / 255.0  # Rescale to [0, 1] as done in training
 
             predictions = model.predict(img_array)
-            print(predictions)
             predicted_index = np.argmax(predictions[0])
-            print(predicted_index)
+            print(predictions)
             result = class_names[predicted_index]
-            print(result)
             confidence = float(predictions[0][predicted_index])
             risk_level = risk_map[result]
  
@@ -170,11 +183,12 @@ def history_view(request):
     scans = Prediction.objects.filter(user=request.user)
 
     if filter_val == 'normal':
-        scans = scans.filter(result__icontains='Normal')
+        scans = scans.filter(risk_level='Low Risk')
     elif filter_val == 'mild':
-        scans = scans.filter(result__icontains='Mild')
+        scans = scans.filter(risk_level='Moderate Risk')
     elif filter_val == 'high':
-        scans = scans.filter(result__icontains='High')
+        # Include both High and Very High risk for 'high' filter
+        scans = scans.filter(risk_level__in=['High Risk', 'Very High Risk'])
 
     context = {
         'scans': scans.order_by('-timestamp'),

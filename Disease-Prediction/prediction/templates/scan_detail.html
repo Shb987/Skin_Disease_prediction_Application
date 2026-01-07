@@ -6,48 +6,66 @@
 <div class="flex flex-col lg:flex-row min-h-screen">
 
   <main class="flex-1 p-6">
-    <div class="bg-white rounded-xl shadow p-6">
-      <h1 class="text-2xl font-bold mb-4">Scan Details</h1>
+    <div class="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-xl shadow-2xl p-6">
+      <h1 class="text-2xl font-bold mb-8 text-slate-100 uppercase tracking-widest">Scan Details</h1>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <h4 class="text-sm text-gray-500">Patient</h4>
-          <p class="font-medium">{{ scan.patient_name }}</p>
-        </div>
-        <div>
-          <h4 class="text-sm text-gray-500">Date</h4>
-          <p class="font-medium">{{ scan.created_at|date:"Y-m-d H:i" }}</p>
-        </div>
-        <div>
-          <h4 class="text-sm text-gray-500">Scan Type</h4>
-          <p class="font-medium">{{ scan.scan_type }}</p>
-        </div>
-        <div>
-          <h4 class="text-sm text-gray-500">Result</h4>
-          <span class="px-2 py-1 text-xs rounded-full
-            {% if scan.result == 'Normal' %}bg-green-100 text-green-800
-            {% elif scan.result == 'Mild Risk' %}bg-amber-100 text-amber-800
-            {% elif scan.result == 'High Risk' %}bg-red-100 text-red-800
-            {% else %}bg-gray-100 text-gray-800{% endif %}">
-            {{ scan.result }}
-          </span>
-        </div>
-        <div>
-          <h4 class="text-sm text-gray-500">Confidence</h4>
-          <p class="font-medium">{{ scan.confidence }}%</p>
-        </div>
-        <div>
-          <h4 class="text-sm text-gray-500">Image</h4>
-          {% if scan.image_file %}
-          <img src="{{ scan.image_file.url }}" alt="Skin Image" class="w-64 h-64 object-contain border rounded">
-          {% else %}
-          <p class="text-gray-500">No image uploaded</p>
-          {% endif %}
-        </div>
-      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="space-y-6">
+          <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Patient</h4>
+            <p class="font-medium text-slate-200 text-lg">{{ scan.patient_name }}</p>
+          </div>
 
-      <div class="mt-6">
-        <a href="{% url 'history' %}" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Back to History</a>
+          <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Date</h4>
+            <p class="font-medium text-slate-200">{{ scan.created_at|date:"Y-m-d H:i" }}</p>
+          </div>
+
+          <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Scan Type</h4>
+            <p class="font-medium text-slate-200">{{ scan.scan_type }}</p>
+          </div>
+
+          <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
+            <a href="{% url 'history' %}"
+              class="inline-flex items-center text-indigo-400 hover:text-indigo-300 transition-colors font-medium text-sm">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to History
+            </a>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Result</h4>
+            <span class="px-4 py-2 text-xs font-bold rounded-full uppercase tracking-wider
+              {% if scan.result == 'Benign' or scan.result == 'Melanocytic nevi (nv)' or scan.result == 'Benign keratosis-like lesions (bkl)' or scan.result == 'Vascular lesions (vasc)' or scan.result == 'Dermatofibroma (df)' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
+              {% elif scan.result == 'Actinic keratoses (akiec)' %}bg-amber-500/10 text-amber-400 border border-amber-500/20
+              {% else %}bg-rose-500/10 text-rose-400 border border-rose-500/20{% endif %}">
+              {{ scan.result }}
+            </span>
+          </div>
+
+          <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
+            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Confidence</h4>
+            <p class="font-medium text-indigo-400 font-mono">{{ scan.confidence }}%</p>
+          </div>
+
+          <div>
+            <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-3">Image Analysis</h4>
+            {% if scan.image_file %}
+            <div class="rounded-2xl overflow-hidden border-2 border-slate-700/50 shadow-2xl relative group">
+              <img src="{{ scan.image_file.url }}" alt="Skin Image"
+                class="w-full h-64 object-cover transform group-hover:scale-105 transition-transform duration-700">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent pointer-events-none"></div>
+            </div>
+            {% else %}
+            <p class="text-gray-500">No image uploaded</p>
+            {% endif %}
+          </div>
+        </div>
       </div>
     </div>
   </main>

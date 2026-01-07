@@ -77,11 +77,13 @@
             Authenticate Session
           </button>
 
-          {% if error %}
+          {% if messages %}
+          {% for message in messages %}
           <div
-            class="mt-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-center text-[10px] font-black uppercase tracking-widest">
-            Telemetry Mismatch: {{ error }}
+            class="mt-6 p-4 rounded-2xl {% if message.tags == 'success' %}bg-emerald-500/10 border-emerald-500/20 text-emerald-400{% else %}bg-rose-500/10 border-rose-500/20 text-rose-400{% endif %} border text-center text-[10px] font-black uppercase tracking-widest">
+            {{ message }}
           </div>
+          {% endfor %}
           {% endif %}
 
           <div class="pt-10 text-center border-t border-slate-800/50 mt-10">
