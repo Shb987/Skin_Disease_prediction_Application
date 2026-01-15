@@ -181,8 +181,20 @@ def upload_skin_view(request):
 @login_required(login_url='login')
 def history_view(request):
     filter_val = request.GET.get('filter', 'all')
+    search_query = request.GET.get('q', '')
+    category_val = request.GET.get('category', '')
+
     scans = Prediction.objects.filter(user=request.user)
 
+    # Search by patient name
+    if search_query:
+        scans = scans.filter(patient_name__icontains=search_query)
+
+    # Filter by Category (Result)
+    if category_val and category_val != 'all':
+        scans = scans.filter(result=category_val)
+
+    # Existing Risk Filters
     if filter_val == 'normal':
         scans = scans.filter(risk_level__startswith='Low Risk')
     elif filter_val == 'mild':
@@ -193,8 +205,15 @@ def history_view(request):
 
     context = {
         'scans': scans.order_by('-timestamp'),
-        'filter': filter_val
+        'filter': filter_val,
+        'search_query': search_query,
+        'category_filter': category_val,
+        'categories': class_names  # Pass the list of diagnosis categories
     }
+
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return render(request, 'history_rows.html', {'scans': context['scans']})
+
     return render(request, 'history.html', context)
 
 from django.shortcuts import render, get_object_or_404

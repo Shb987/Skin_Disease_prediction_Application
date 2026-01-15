@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Scan Detail - SkinCheck AI{% endblock %}
+{% block title %}Scan Detail - OncoDerma AI{% endblock %}
 
 {% block content %}
 <div class="flex flex-col lg:flex-row min-h-screen">
@@ -18,7 +18,7 @@
 
           <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
             <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-1">Date</h4>
-            <p class="font-medium text-slate-200">{{ scan.created_at|date:"Y-m-d H:i" }}</p>
+            <p class="font-medium text-slate-200">{{ scan.timestamp|date:"Y-m-d H:i" }}</p>
           </div>
 
           <div class="bg-slate-800/40 p-4 rounded-xl border border-slate-700/50">
