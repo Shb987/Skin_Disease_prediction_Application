@@ -8,7 +8,7 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import numpy as np
 from django.contrib.auth.models import User
-import google.generativeai as genai
+from google import genai
 import os
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -259,9 +259,8 @@ def profile_view(request):
 def configure_gemini():
     api_key = os.environ.get('GEMINI_API_KEY')
     if api_key:
-        genai.configure(api_key=api_key)
-        return True
-    return False
+        return genai.Client(api_key=api_key)
+    return None
 
 @login_required(login_url="login")
 @csrf_exempt
@@ -277,7 +276,8 @@ def chat_view(request):
             
             scan = Prediction.objects.get(id=scan_id, user=request.user)
             
-            if not configure_gemini():
+            client = configure_gemini()
+            if not client:
                 return JsonResponse({"error": "Gemini API key not configured"}, status=500)
             
             # Construct Prompt
@@ -295,8 +295,10 @@ def chat_view(request):
             User Question: {message}
             """
             
-            model = genai.GenerativeModel('gemini-pro')
-            response = model.generate_content(system_context)
+            response = client.models.generate_content(
+                model='gemini-pro-latest', 
+                contents=system_context
+            )
             
             return JsonResponse({"response": response.text})
             

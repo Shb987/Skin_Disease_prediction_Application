@@ -6,6 +6,7 @@ services:
       - ./Disease-Prediction/:/app/
     ports:
       - "8000:8000"
+    env_file:
+      - ./Disease-Prediction/.env
     environment:
       - DEBUG=1
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
