@@ -14,18 +14,59 @@
         <p class="text-slate-400 mt-2">Review previous skin image analyses and results</p>
       </div>
 
-      <!-- Filters -->
-      <div class="bg-slate-900/40 backdrop-blur-lg p-2 rounded-2xl border border-slate-800 shadow-xl mb-10 inline-flex">
-        <div class="flex flex-wrap gap-1">
-          <a href="{% url 'history' %}?filter=all"
-            class="px-5 py-2.5 font-bold rounded-xl text-xs transition-all {% if filter == 'all' %}bg-indigo-600 text-white shadow-lg shadow-indigo-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">ALL
-            ARCHIVE</a>
-          <a href="{% url 'history' %}?filter=normal"
-            class="px-5 py-2.5 font-bold rounded-xl text-xs transition-all {% if filter == 'normal' %}bg-emerald-600 text-white shadow-lg shadow-emerald-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">BENIGN</a>
-          <a href="{% url 'history' %}?filter=mild"
-            class="px-5 py-2.5 font-bold rounded-xl text-xs transition-all {% if filter == 'mild' %}bg-amber-600 text-white shadow-lg shadow-amber-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">ELEVATED</a>
-          <a href="{% url 'history' %}?filter=high"
-            class="px-5 py-2.5 font-bold rounded-xl text-xs transition-all {% if filter == 'high' %}bg-rose-600 text-white shadow-lg shadow-rose-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">CRITICAL</a>
+      <!-- Filters and Search -->
+      <div class="mb-10 space-y-4">
+        <!-- Search and Category Filter Form -->
+        <form method="GET" class="flex flex-col md:flex-row gap-4">
+          <!-- Retain existing risk filter if set -->
+          <input type="hidden" name="filter" value="{{ filter }}">
+
+          <div class="relative flex-1">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input type="text" name="q" value="{{ search_query }}" placeholder="Search by patient name..."
+              class="block w-full pl-10 pr-3 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all text-sm">
+          </div>
+
+          <div class="relative w-full md:w-64">
+            <select name="category" onchange="this.form.submit()"
+              class="block w-full pl-3 pr-10 py-2.5 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500/50 transition-all appearance-none text-sm">
+              <option value="all">All Categories</option>
+              {% for cat in categories %}
+              <option value="{{ cat }}" {% if category_filter == cat %}selected{% endif %}>{{ cat }}</option>
+              {% endfor %}
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+              <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
+          <button type="submit"
+            class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-all shadow-lg shadow-indigo-900/20 text-sm">
+            Search
+          </button>
+        </form>
+
+        <!-- Quick Filters (Risk Level) -->
+        <div
+          class="bg-slate-900/40 backdrop-blur-lg p-2 rounded-2xl border border-slate-800 shadow-xl inline-flex overflow-x-auto max-w-full">
+          <div class="flex flex-nowrap gap-1">
+            <a href="?filter=all&q={{ search_query }}&category={{ category_filter }}"
+              class="px-5 py-2.5 font-bold rounded-xl text-xs whitespace-nowrap transition-all {% if filter == 'all' %}bg-indigo-600 text-white shadow-lg shadow-indigo-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">ALL
+              ARCHIVE</a>
+            <a href="?filter=normal&q={{ search_query }}&category={{ category_filter }}"
+              class="px-5 py-2.5 font-bold rounded-xl text-xs whitespace-nowrap transition-all {% if filter == 'normal' %}bg-emerald-600 text-white shadow-lg shadow-emerald-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">BENIGN</a>
+            <a href="?filter=mild&q={{ search_query }}&category={{ category_filter }}"
+              class="px-5 py-2.5 font-bold rounded-xl text-xs whitespace-nowrap transition-all {% if filter == 'mild' %}bg-amber-600 text-white shadow-lg shadow-amber-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">ELEVATED</a>
+            <a href="?filter=high&q={{ search_query }}&category={{ category_filter }}"
+              class="px-5 py-2.5 font-bold rounded-xl text-xs whitespace-nowrap transition-all {% if filter == 'high' %}bg-rose-600 text-white shadow-lg shadow-rose-900/40{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/50{% endif %}">CRITICAL</a>
+          </div>
         </div>
       </div>
 
@@ -44,45 +85,8 @@
                 <th class="py-6 px-10 text-right">Action</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-slate-800/50">
-              {% for scan in scans %}
-              <tr class="group hover:bg-indigo-500/[0.03] transition-all duration-300">
-                <td class="py-7 px-10 text-slate-500 text-sm font-medium">{{ scan.timestamp|date:"M d, Y • H:i" }}</td>
-                <td class="py-7 px-10 flex items-center">
-                  <div
-                    class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center mr-4 text-xs text-indigo-400 font-bold uppercase transition-transform group-hover:scale-110">
-                    {{ scan.patient_name|slice:":2" }}
-                  </div>
-                  <span class="text-slate-100 font-semibold tracking-tight">{{ scan.patient_name }}</span>
-                </td>
-                <td class="py-7 px-10">
-                  <span class="inline-flex items-center px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full shadow-sm
-                    {% if 'Low' in scan.risk_level %}text-emerald-400 bg-emerald-400/10 ring-1 ring-emerald-500/20
-                    {% elif 'High' in scan.risk_level %}text-rose-400 bg-rose-400/10 ring-1 ring-rose-500/20
-                    {% else %}text-amber-400 bg-amber-400/10 ring-1 ring-amber-500/20{% endif %}">
-                    <span class="w-2 h-2 rounded-full bg-current mr-2 animate-pulse"></span>
-                    {{ scan.result }}
-                  </span>
-                </td>
-                <td class="py-7 px-10 text-indigo-400 font-mono font-black text-lg">
-                  <span class="opacity-40 text-xs mr-0.5">%</span>{{ scan.confidence|floatformat:1 }}
-                </td>
-                <td class="py-7 px-10 text-right">
-                  <a href="{% url 'scan_detail' scan.id %}"
-                    class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 hover:border-slate-600 transition-all group">
-                    <svg class="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none"
-                      stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </a>
-                </td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="6" class="text-center py-12 text-gray-500">No scans found matching your criteria</td>
-              </tr>
-              {% endfor %}
+            <tbody id="history-table-body" class="divide-y divide-slate-800/50">
+              {% include 'history_rows.html' %}
             </tbody>
           </table>
         </div>
@@ -91,4 +95,39 @@
     </div>
   </main>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.querySelector('input[name="q"]');
+    const categorySelect = document.querySelector('select[name="category"]');
+    const tableBody = document.getElementById('history-table-body');
+    let debounceTimer;
+
+    function performSearch() {
+      const query = searchInput.value;
+      const category = categorySelect.value;
+      const filter = new URLSearchParams(window.location.search).get('filter') || 'all';
+
+      const url = `{% url 'history' %}?q=${encodeURIComponent(query)}&category=${encodeURIComponent(category)}&filter=${encodeURIComponent(filter)}`;
+
+      fetch(url, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+        .then(response => response.text())
+        .then(html => {
+          tableBody.innerHTML = html;
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    searchInput.addEventListener('input', function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(performSearch, 300); // 300ms debounce
+    });
+
+    categorySelect.addEventListener('change', performSearch);
+  });
+</script>
 {% endblock %}

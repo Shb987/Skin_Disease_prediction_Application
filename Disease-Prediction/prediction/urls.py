@@ -10,5 +10,6 @@ urlpatterns = [
     path('history/', views.history_view, name='history'),
     path('scan/<int:scan_id>/', views.scan_detail_view, name='scan_detail'),  # Optional detail page
     path("profile/", views.profile_view, name="profile"),
+    path("chat/", views.chat_view, name="chat"),
 
 ]
