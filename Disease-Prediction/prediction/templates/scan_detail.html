@@ -3,6 +3,31 @@
 {% block title %}Scan Detail - OncoDerma AI{% endblock %}
 
 {% block content %}
+<style>
+  .prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    font-size: 0.875rem;
+  }
+
+  .prose th,
+  .prose td {
+    border: 1px solid rgba(75, 85, 99, 0.4);
+    padding: 0.5rem;
+    text-align: left;
+  }
+
+  .prose th {
+    background-color: rgba(31, 41, 55, 0.5);
+    font-weight: 600;
+    color: #f3f4f6;
+  }
+
+  .prose td {
+    color: #e5e7eb;
+  }
+</style>
 <div class="flex flex-col lg:flex-row min-h-screen">
 
   <main class="flex-1 p-6">
@@ -97,7 +122,9 @@
             </div>
             <div
               class="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl rounded-tl-none p-3 text-sm text-slate-200">
-              <p>Hello! I'm your medical assistant. I can help you understand the diagnosis of <strong>{{ scan.result }}</strong>. What would you like to know?</p>
+              <p>Hello! I'm your medical assistant. I can help you understand the diagnosis of
+                <strong>{{ scan.result }}</strong>. What would you like to know?
+              </p>
             </div>
           </div>
         </div>
@@ -122,6 +149,9 @@
   </main>
 </div>
 
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const chatInput = document.getElementById('chat-input');
@@ -139,8 +169,8 @@
                 <div class="flex-shrink-0 mr-3">
                     <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">AI</div>
                 </div>
-                <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl rounded-tl-none p-3 text-sm text-slate-200 max-w-[80%]">
-                    <p>${text}</p>
+                <div class="bg-indigo-500/10 border border-indigo-500/20 rounded-2xl rounded-tl-none p-3 text-sm text-slate-200 max-w-[80%] prose prose-invert prose-sm max-w-none">
+                    ${marked.parse(text)}
                 </div>
             `;
       } else {
