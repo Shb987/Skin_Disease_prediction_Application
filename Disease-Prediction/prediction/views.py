@@ -296,7 +296,7 @@ def chat_view(request):
             """
             
             response = client.models.generate_content(
-                model='gemini-pro-latest', 
+                model='gemini-2.5-flash', 
                 contents=system_context
             )
             
