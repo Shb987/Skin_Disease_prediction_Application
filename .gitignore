@@ -25,6 +25,5 @@ media/
 staticfiles/
 # Environment variables
 .env
-.env.*
 
 db.sqlite3
